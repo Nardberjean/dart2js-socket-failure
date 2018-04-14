@@ -1,0 +1,37 @@
+language: dart
+dart:
+- dev
+- stable
+
+install:
+# - pub get
+# - pip install --user pygments
+
+script:
+- dart2js --checked --enable-diagnostic-colors --out=http_server.dart2js http_server.dart
+- cp /home/travis/dart-sdk/lib/_internal/js_runtime/lib/preambles/d8.js http_server.d8js
+- cp /home/travis/dart-sdk/lib/_internal/js_runtime/lib/preambles/jsshell.js http_server.jsshell
+- du -sch http_server.d8js http_server.jsshell http_server.dart2js
+- cat http_server.dart2js >> http_server.d8js
+- cat http_server.dart2js >> http_server.jsshell
+- du -sch http_server.d8js http_server.jsshell
+
+- dart http_server.dart 8000 &
+# - printf 'HEAD /dart HTTP/1.1\r\n\r\n' | socat -T10 - TCP4:localhost:8000,forever >/dev/null # Waiting for server to connect.
+- wget --quiet --connect-timeout=10 --output-document=- localhost:8000/dart
+
+- node http_server.d8js &
+# - printf 'HEAD /dart HTTP/1.1\r\n\r\n' | socat -T10 - TCP4:localhost:8888,forever >/dev/null # Waiting for server to connect.
+# /home/travis/build/travis-util/dart2js-demo/http_server.d8js:263
+# Unsupported operation: ServerSocket.bind
+- wget --quiet --connect-timeout=10 --output-document=- localhost:8888/dart
+
+after_script:
+- pub deps
+- pub --verbose --help --enable-diagnostic-colors
+- dart --verbose --help --enable-diagnostic-colors
+- dart2js --verbose --help --enable-diagnostic-colors
+
+- node --version
+- command -v dart
+- ls --color /home/travis/dart-sdk/lib/_internal/js_runtime/lib/preambles
