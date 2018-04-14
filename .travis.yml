@@ -17,11 +17,11 @@ script:
 - du -sch http_server.d8js http_server.jsshell
 
 - dart http_server.dart 8000 &
-# - printf 'HEAD /dart HTTP/1.1\r\n\r\n' | socat -T10 - TCP4:localhost:8000,forever >/dev/null # Waiting for server to connect.
+- printf 'HEAD /dart HTTP/1.1\r\n\r\n' | socat -T10 - TCP4:localhost:8000,forever >/dev/null # Waiting for server to connect.
 - wget --quiet --connect-timeout=10 --output-document=- localhost:8000/dart
 
 - node http_server.d8js &
-# - printf 'HEAD /dart HTTP/1.1\r\n\r\n' | socat -T10 - TCP4:localhost:8888,forever >/dev/null # Waiting for server to connect.
+- printf 'HEAD /dart HTTP/1.1\r\n\r\n' | socat -T10 - TCP4:localhost:8888,forever >/dev/null # Waiting for server to connect.
 # /home/travis/build/travis-util/dart2js-demo/http_server.d8js:263
 # Unsupported operation: ServerSocket.bind
 - wget --quiet --connect-timeout=10 --output-document=- localhost:8888/dart
