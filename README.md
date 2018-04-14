@@ -2,3 +2,5 @@
 * This demontrate a bug trying to open a socket with node.
 # Status: Travis-inverted
 * Travis will fail then the bug is corrected!
+# 
+* https://gitter.im/dart-lang/sdk
